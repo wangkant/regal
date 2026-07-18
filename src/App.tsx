@@ -35,7 +35,7 @@ export default function App() {
         try {
             const raw = localStorage.getItem(LS_PROFILE);
             if (raw) return JSON.parse(raw);
-        } catch { }
+        } catch { /* ignore storage errors */ }
         return null;
     });
     const [verifyOpen, setVerifyOpen] = useState<boolean>(() => !profile);
@@ -60,11 +60,12 @@ export default function App() {
         if (!firm || firm.length < 2) return setVErr("Please enter your firm/organization.");
         if (!/^\d{4}-\d{2}-\d{2}$/.test(validThrough)) return setVErr("Valid-through date must be YYYY-MM-DD.");
 
+        // eslint-disable-next-line react-hooks/purity -- click handler runs on user interaction, not during render
         const p: LawyerProfile = { fullName, barNumber, firm, role: vRole, validThrough, verifiedAt: Date.now() };
         setProfile(p);
         try {
             localStorage.setItem(LS_PROFILE, JSON.stringify(p));
-        } catch { }
+        } catch { /* ignore storage errors */ }
         setVerifyOpen(false);
         setInputSpeaker(p.role);
     }
@@ -72,7 +73,7 @@ export default function App() {
     function resetVerification() {
         try {
             localStorage.removeItem(LS_PROFILE);
-        } catch { }
+        } catch { /* ignore storage errors */ }
         setProfile(null);
         setVerifyOpen(true);
     }
@@ -82,7 +83,7 @@ export default function App() {
         try {
             const raw = localStorage.getItem(LS_KEY);
             if (raw) return JSON.parse(raw);
-        } catch { }
+        } catch { /* ignore storage errors */ }
         const now = Date.now();
         return [
             { id: uuid(), at: now - 1000 * 60 * 3, speaker: "CLERK", kind: "mark", text: "SESSION OPENED" },
@@ -95,7 +96,7 @@ export default function App() {
     useEffect(() => {
         try {
             localStorage.setItem(LS_KEY, JSON.stringify(logs));
-        } catch { }
+        } catch { /* ignore storage errors */ }
     }, [logs]);
 
     function pushLog(item: LogItem) {
@@ -114,7 +115,7 @@ export default function App() {
         setHighlightIds(new Set());
         try {
             localStorage.removeItem(LS_KEY);
-        } catch { }
+        } catch { /* ignore storage errors */ }
     }
 
     // Demo run once
@@ -296,6 +297,8 @@ export default function App() {
         hiLine: "rgba(29,78,216,.30)",
     };
 
+    // Mixed map of style objects and style-factory functions; typing it strictly needs a refactor.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const styles: Record<string, any> = {
         page: { minHeight: "100vh", background: c.bg, color: c.ink, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" },
         container: { maxWidth: 1240, margin: "0 auto", padding: 16 },
@@ -461,7 +464,7 @@ export default function App() {
                                 <div>
                                     <div style={styles.h}>Role</div>
                                     <div style={{ marginTop: 6 }}>
-                                        <select style={styles.select} value={vRole} onChange={(e) => setVRole(e.target.value as any)}>
+                                        <select style={styles.select} value={vRole} onChange={(e) => setVRole(e.target.value as LawyerProfile["role"])}>
                                             <option value="LAWYER 1">LAWYER 1</option>
                                             <option value="LAWYER 2">LAWYER 2</option>
                                         </select>
@@ -611,7 +614,7 @@ export default function App() {
 
                             <div style={{ marginTop: 14, ...styles.h }}>Filter</div>
                             <div style={styles.row}>
-                                <select style={styles.select} value={filter} onChange={(e) => setFilter(e.target.value as any)}>
+                                <select style={styles.select} value={filter} onChange={(e) => setFilter(e.target.value as Speaker | "ALL")}>
                                     <option value="ALL">All speakers</option>
                                     <option value="JUDGE">Judge</option>
                                     <option value="WITNESS">Witness</option>

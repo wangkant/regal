@@ -51,7 +51,7 @@ export function formatLegalTranscript(params: {
     ];
   };
 
-  let out: string[] = [];
+  const out: string[] = [];
   let pageNo = 1;
   let lineNo = 1;
 

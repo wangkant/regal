@@ -1,6 +1,6 @@
 # Regal
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-2563EB?style=flat-square&logo=github)](https://wangkant.github.io/regal/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-wangkant.github.io%2Fregal-0969da?style=flat-square&labelColor=24292f)](https://wangkant.github.io/regal/)
 
 An AI-powered legal operations platform that streamlines depositions through real-time transcription, intelligent assistance, and faster case navigation.
 
